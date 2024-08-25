@@ -1,0 +1,684 @@
+{
+  "name": "Deezer Loved Backup",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "0927d48c-d1c5-4cd1-ab8a-a6a875e5b8d9",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "title",
+              "stringValue": "={{ $json.title }}"
+            },
+            {
+              "name": "artist",
+              "stringValue": "={{ $json.artist.name }}"
+            },
+            {
+              "name": "duration",
+              "stringValue": "={{ $json.duration }}"
+            },
+            {
+              "name": "deezer_id",
+              "stringValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "cdd6c2ee-c73a-4caa-964b-a8adbe688b82",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1380,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "title",
+              "field2": "title"
+            },
+            {
+              "field1": "artist",
+              "field2": "artist"
+            }
+          ]
+        },
+        "joinMode": "keepNonMatches",
+        "outputDataFrom": "input2",
+        "options": {}
+      },
+      "id": "d5776100-170b-46dc-ad7b-b5ef80ed33ba",
+      "name": "Tracks to add",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1660,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "title",
+              "field2": "title"
+            },
+            {
+              "field1": "=artist",
+              "field2": "artist"
+            }
+          ]
+        },
+        "joinMode": "keepNonMatches",
+        "outputDataFrom": "input1",
+        "options": {}
+      },
+      "id": "0877ba00-082e-4576-951c-4a5a34066b2a",
+      "name": "Tracks to remove",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1660,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA",
+          "mode": "list",
+          "cachedResultName": "loved-song",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "song",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA/edit#gid=0"
+        },
+        "startIndex": "={{ $json.row_number }}"
+      },
+      "id": "909d57d3-46cc-47e2-8807-5b0474000c82",
+      "name": "Delete track records",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1880,
+        280
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ctBaihiWnIkbCukC",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA",
+          "mode": "list",
+          "cachedResultName": "loved-song",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "song",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "spotify_uri": "={{ $json.spotify_uri }}",
+            "deezer_id": "={{ $json.deezer_id }}",
+            "duration": "={{ $json.duration }}",
+            "artist": "={{ $json.artist }}",
+            "title": "={{ $json.title }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "artist",
+              "displayName": "artist",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "duration",
+              "displayName": "duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "deezer_id",
+              "displayName": "deezer_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "spotify_uri",
+              "displayName": "spotify_uri",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "6ef8f86e-0976-43b5-afde-e2193138c21d",
+      "name": "Append track records",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2940,
+        -140
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ctBaihiWnIkbCukC",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA",
+          "mode": "list",
+          "cachedResultName": "loved-song",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "song",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GfNzhhIU098kz4vf_sMDdIhbXGwMh829zcequh3O6OA/edit#gid=0"
+        },
+        "options": {
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "FORMATTED_STRING"
+            }
+          }
+        }
+      },
+      "id": "6b3413b9-8eec-4650-9372-0bbc978dad3f",
+      "name": "Read track records",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        60
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ctBaihiWnIkbCukC",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "track",
+        "operation": "search",
+        "query": "=track:\"{{ $json.title }}\" artist:\"{{ $json.artist }}\"",
+        "limit": 1,
+        "filters": {}
+      },
+      "id": "6e5e6420-e6d7-47cc-853b-86fe0e0db220",
+      "name": "Spotify",
+      "type": "n8n-nodes-base.spotify",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        -60
+      ],
+      "credentials": {
+        "spotifyOAuth2Api": {
+          "id": "zlXSeiUN7Xp67gb3",
+          "name": "Spotify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "deezer_id",
+              "field2": "deezer_id"
+            }
+          ]
+        },
+        "joinMode": "enrichInput2",
+        "options": {}
+      },
+      "id": "2d9c2ea4-b55b-47c4-8362-917cee5d9922",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        2480,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "deezer_id",
+              "stringValue": "={{ $('Tracks to add').item.json.deezer_id }}"
+            },
+            {
+              "name": "spotify_uri",
+              "stringValue": "={{ $json.uri }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "7c54e1f2-70b7-4ab8-8308-269e55838d8b",
+      "name": "Map Deezer/Spotify identifier",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        2260,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "deezer_id",
+              "stringValue": "={{ $('Tracks to add').item.json.deezer_id }}"
+            },
+            {
+              "name": "youtube_id",
+              "stringValue": "={{ $json.id.videoId }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "3d26552d-cc5d-439b-8cb7-29bda700ebfb",
+      "name": "Map Deezer/Youtube ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        2260,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "deezer_id",
+              "field2": "deezer_id"
+            }
+          ]
+        },
+        "joinMode": "enrichInput2",
+        "options": {}
+      },
+      "id": "e9497b25-bb76-40e4-9d5f-2f0e7bf5f738",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        2740,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "user",
+        "operation": "getFavoriteTracks",
+        "returnMyUser": false,
+        "userId": "2623407402",
+        "returnAll": true
+      },
+      "id": "ec615a17-4054-4f35-bc57-e04f6d6d495c",
+      "name": "Deezer1",
+      "type": "n8n-nodes-deezer.deezer",
+      "typeVersion": 1,
+      "position": [
+        980,
+        300
+      ],
+      "credentials": {
+        "deezerOAuth2Api": {
+          "id": "bHDyItzc1GCs1sTt",
+          "name": "Deezer account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "limit": 1,
+        "filters": {
+          "q": "={{ $json.title }} {{ $json.artist }}"
+        },
+        "options": {}
+      },
+      "id": "0ac2d6c4-9556-47bf-8f99-ab74fe82ed58",
+      "name": "YouTube",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        -240
+      ],
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "rULMpQs9ootg24u1",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "maxItems": 95
+      },
+      "id": "fef813d7-d86e-4dc5-ab3c-cd3e5c1c1e3f",
+      "name": "Limit",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 5
+            }
+          ]
+        }
+      },
+      "id": "1a957223-c2d5-47ab-8800-6b0ab9b22721",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        200
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Tracks to add",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Tracks to remove",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Tracks to add": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tracks to remove": {
+      "main": [
+        [
+          {
+            "node": "Delete track records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read track records": {
+      "main": [
+        [
+          {
+            "node": "Tracks to add",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tracks to remove",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spotify": {
+      "main": [
+        [
+          {
+            "node": "Map Deezer/Spotify identifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Map Deezer/Spotify identifier": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Deezer/Youtube ID": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deezer1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Append track records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube": {
+      "main": [
+        [
+          {
+            "node": "Map Deezer/Youtube ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Spotify",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "YouTube",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read track records",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Deezer1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "31a1d253-1751-4f43-9c0e-f747fc8c7ca6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c38055fa9481b2d6fa38985936a99d580f517b2c0dde934a1b7b4494396fba02"
+  },
+  "id": "VIJxAyUjBAocJ0LI",
+  "tags": []
+}
